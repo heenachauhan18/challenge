@@ -1,7 +1,6 @@
 ﻿using CosmosCRUD.Entities;
 using CosmosCRUD.Exceptions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 
 namespace CosmosCRUD.Data
 {
@@ -14,7 +13,7 @@ namespace CosmosCRUD.Data
             this._container = dbClient.GetContainer(databaseName, containerName);
         }
 
-        public async Task<UserEntity> AddItemAsync(UserEntity userEntity)
+        public async Task<UserEntity?> AddItemAsync(UserEntity userEntity)
         {
             try
             {
@@ -28,7 +27,7 @@ namespace CosmosCRUD.Data
 
         }
 
-        public async Task<UserEntity> GetItemAsyncById(string id)
+        public async Task<UserEntity?> GetItemAsyncById(string id)
         {
             try
             {

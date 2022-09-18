@@ -1,7 +1,6 @@
 ﻿using CosmosCRUD.Data;
 using CosmosCRUD.Entities;
 using CosmosCRUD.Exceptions;
-using Microsoft.Azure.Cosmos;
 
 namespace CosmosCRUD.Repositories
 {

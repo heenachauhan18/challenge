@@ -38,7 +38,6 @@ namespace CosmosCRUD.Controllers
         }
 
         [HttpGet]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(UserResponseDTO))]
