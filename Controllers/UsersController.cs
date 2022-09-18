@@ -44,8 +44,14 @@ namespace CosmosCRUD.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(UserResponseDTO))]
         public async Task<IActionResult> GetUserByEmailAddress([Required] [FromQuery] string emailAddress)
         {
-            UserResponseDTO response = await usersService.GetUser(emailAddress);
-            return Ok(response);
+            try
+            {
+                UserResponseDTO response = await usersService.GetUser(emailAddress);
+                return Ok(response);
+            } catch (UserNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

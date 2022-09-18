@@ -28,8 +28,14 @@ namespace CosmosCRUD.Repositories
 
         public async Task<UserEntity> GetUserByEmailAddress(string emailAddress)
         {
-            return await cosmosDbService.GetItemAsyncById(emailAddress);
-            
+            UserEntity user = await cosmosDbService.GetItemAsyncById(emailAddress);
+
+            if(user == null)
+            {
+                throw new UserNotFoundException(string.Format("User not found with {0} email address", emailAddress));
+            }
+
+            return user;
         }
     }
 }
