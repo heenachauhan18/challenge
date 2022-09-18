@@ -1,7 +1,9 @@
 ﻿using CosmosCRUD.DTOs;
+using CosmosCRUD.Exceptions;
 using CosmosCRUD.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 
 namespace CosmosCRUD.Controllers
@@ -21,17 +23,26 @@ namespace CosmosCRUD.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         public async Task<IActionResult> CreateUser([FromBody] UserRequestDTO usersDTO)
         {
-            UserResponseDTO response = await usersService.CreateUser(usersDTO);
-            return Created("CreatedUser", response);
+            try
+            {
+                UserResponseDTO response = await usersService.CreateUser(usersDTO);
+                return Created("CreatedUser", response);
+            }
+            catch (UserAlreadyExistsException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpGet]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDTO))]
-        public async Task<IActionResult> GetUserByEmailAddress([BindRequired, FromQuery] string emailAddress)
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(UserResponseDTO))]
+        public async Task<IActionResult> GetUserByEmailAddress([Required] [FromQuery] string emailAddress)
         {
             UserResponseDTO response = await usersService.GetUser(emailAddress);
             return Ok(response);

@@ -1,5 +1,6 @@
 ﻿using CosmosCRUD.Data;
 using CosmosCRUD.Entities;
+using CosmosCRUD.Exceptions;
 using Microsoft.Azure.Cosmos;
 
 namespace CosmosCRUD.Repositories
@@ -15,13 +16,19 @@ namespace CosmosCRUD.Repositories
 
         public async Task<UserEntity> CreateUser(UserEntity entity)
         {
-            return await cosmosDbService.AddItemAsync(entity);
+            UserEntity createdUser = await cosmosDbService.AddItemAsync(entity);
+
+            if (createdUser == null)
+            {
+                throw new UserAlreadyExistsException("User already exists");
+            }
+
+            return createdUser;
         }
 
         public async Task<UserEntity> GetUserByEmailAddress(string emailAddress)
         {
-            string queryString = string.Format("Select * from c WHERE c.EmailAddress= \"{0}\"", emailAddress);
-            return await cosmosDbService.GetItemsAsync(queryString);
+            return await cosmosDbService.GetItemAsyncById(emailAddress);
             
         }
     }

@@ -1,5 +1,7 @@
 ﻿using CosmosCRUD.Entities;
+using CosmosCRUD.Exceptions;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace CosmosCRUD.Data
 {
@@ -14,14 +16,24 @@ namespace CosmosCRUD.Data
 
         public async Task<UserEntity> AddItemAsync(UserEntity userEntity)
         {
-            return await this._container.CreateItemAsync<UserEntity>(userEntity, new PartitionKey(userEntity.Id));
+            try
+            {
+                return await this._container.CreateItemAsync<UserEntity>
+                (userEntity, new PartitionKey(userEntity.EmailAddress));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                return null;
+            }
+
         }
 
-        public async Task<UserEntity> GetItemAsync(string id)
+        public async Task<UserEntity> GetItemAsyncById(string id)
         {
             try
             {
-                ItemResponse<UserEntity> response = await this._container.ReadItemAsync<UserEntity>(id, new PartitionKey(id));
+                ItemResponse<UserEntity> response = await this._container
+                    .ReadItemAsync<UserEntity>(id, new PartitionKey(id));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -30,23 +42,7 @@ namespace CosmosCRUD.Data
             }
 
         }
-
-        public async Task<UserEntity> GetItemsAsync(string queryString)
-        {
-
-            var query = this._container.GetItemQueryIterator<UserEntity>(new QueryDefinition(queryString));
-            List<UserEntity> results = new List<UserEntity>();
-
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-
-                results.AddRange(response.ToList());
-            }
-
-            return results.First<UserEntity>();
-        }
-
+        
         public async Task UpdateItemAsync(string id, UserEntity item)
         {
             await this._container.UpsertItemAsync<UserEntity>(item, new PartitionKey(id));
