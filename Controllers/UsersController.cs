@@ -2,7 +2,6 @@
 using CosmosCRUD.Exceptions;
 using CosmosCRUD.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 
@@ -40,7 +39,7 @@ namespace CosmosCRUD.Controllers
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponseDTO))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(UserResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<IActionResult> GetUserByEmailAddress([Required] [FromQuery] string emailAddress)
         {
             try
