@@ -39,6 +39,8 @@ builder.Services.AddTransient<IUsersService, UsersServiceImpl>();
 builder.Services.AddTransient<UsersRepository>();
 builder.Services.AddSingleton<IValidator<UserRequestDTO>, UserRequestValidator>();
 
+builder.Services.AddHealthChecks().AddCheck<CosmosHealthCheck>(nameof(CosmosHealthCheck));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -53,6 +55,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
 
@@ -72,3 +76,5 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigur
 
     return cosmosDbService;
 }
+
+public partial class Program { }

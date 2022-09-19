@@ -24,27 +24,59 @@ namespace CosmosCRUD.Data
             {
                 return null;
             }
+            catch (Exception)
+            {
+                throw new InterenalServerException("Something went wrong");
+            }
 
         }
 
-        public async Task<UserEntity?> GetItemAsyncById(string id)
+        public async Task<UserEntity?> GetItemAsyncById(string emailId)
         {
             try
             {
                 ItemResponse<UserEntity> response = await this._container
-                    .ReadItemAsync<UserEntity>(id, new PartitionKey(id));
+                    .ReadItemAsync<UserEntity>(emailId, new PartitionKey(emailId));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }
+            catch (Exception)
+            {
+                throw new InterenalServerException("Something went wrong");
+            }
 
         }
-        
-        public async Task UpdateItemAsync(string id, UserEntity item)
+
+        public async Task<UserEntity> UpdateItemAsync(string emailId, UserEntity item)
         {
-            await this._container.UpsertItemAsync<UserEntity>(item, new PartitionKey(id));
+            try
+            {
+                return await this._container.UpsertItemAsync<UserEntity>(item, new PartitionKey(emailId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new InterenalServerException("Something went wrong");
+            }
+        }
+
+        public async Task<bool> IsHealthy()
+        {
+            try
+            {
+                await _container.ReadContainerAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

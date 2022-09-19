@@ -1,5 +1,4 @@
-﻿using System.Net;
-
+﻿
 namespace CosmosCRUD.Exceptions
 {
     public class UserAlreadyExistsException : Exception

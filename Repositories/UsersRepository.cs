@@ -4,7 +4,7 @@ using CosmosCRUD.Exceptions;
 
 namespace CosmosCRUD.Repositories
 {
-    public class UsersRepository
+    public class UsersRepository : IUserRepository
     {
         private readonly CosmosDbService cosmosDbService;
 
