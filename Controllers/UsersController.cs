@@ -28,7 +28,7 @@ namespace CosmosCRUD.Controllers
             try
             {
                 UserResponseDTO response = await usersService.CreateUser(usersDTO);
-                return Created("CreatedUser", response);
+                return Created("", response);
             }
             catch (UserAlreadyExistsException ex)
             {

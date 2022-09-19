@@ -72,7 +72,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigur
     CosmosDbService cosmosDbService = new CosmosDbService(client, databaseName, containerName);
 
     Microsoft.Azure.Cosmos.DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/emailAddress");
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
 
     return cosmosDbService;
 }
